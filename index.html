@@ -2,16 +2,15 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Алия — это лето</title>
-<!-- шрифты с display=swap чтобы текст был виден сразу -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Spectral:ital,wght@0,400;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cream:#FCF6ED;--sand:#EEDFC9;
+  --cream:#FCF6ED;
   --gold:#E5A03A;--gold-soft:#F3CC82;
   --coral:#E0816A;--terra:#C56248;--rose:#E7A593;
   --ink:#4A3829;--ink-soft:#7A6450;--line:#E4D3BC;
@@ -19,645 +18,704 @@
   --body:"Spectral",Georgia,serif;
   --hand:"Caveat",cursive;
 }
+
 html,body{
   background:#1c140d;
-  height:100%;overflow:hidden;
+  height:100%;
+  overflow:hidden;
   -webkit-tap-highlight-color:transparent;
-  touch-action:none;
 }
 
 /* ── DECK ── */
-#deck{position:fixed;inset:0;overflow:hidden;}
+#deck{
+  position:fixed;inset:0;
+  overflow:hidden;
+}
 #track{
-  display:flex;height:100%;
-  transition:transform .45s cubic-bezier(.4,0,.2,1);
+  display:flex;
+  height:100%;
+  transition:transform .42s cubic-bezier(.4,0,.2,1);
   will-change:transform;
 }
 
 /* ── SLIDE ── */
 .slide{
-  flex:0 0 100vw;width:100vw;height:100%;
-  overflow:hidden;overflow-y:auto;
+  flex:0 0 100vw;
+  width:100vw;
+  height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
   position:relative;
-  background:radial-gradient(ellipse 120% 60% at 90% -5%, #FFF6E4 0%, rgba(255,246,228,0) 65%), var(--cream);
-  color:var(--ink);font-family:var(--body);
+  background:radial-gradient(ellipse 130% 65% at 88% -8%,#FFF6E4 0%,rgba(255,246,228,0) 62%), var(--cream);
+  color:var(--ink);
+  font-family:var(--body);
 }
 
-/* ── GRAIN ── */
-.grain{position:absolute;inset:0;pointer-events:none;opacity:.4;mix-blend-mode:multiply;
-  background-image:radial-gradient(rgba(120,90,50,.05) 1px,transparent 1px);background-size:4px 4px;z-index:1;}
-
-/* ── SUN ── */
-.sun{position:absolute;border-radius:50%;pointer-events:none;
+/* ── ДЕКОР (всегда под контентом) ── */
+.sun{
+  position:absolute;border-radius:50%;pointer-events:none;z-index:0;
   background:radial-gradient(circle,#FBE2A8 0%,#F3C977 38%,#EBAE52 60%,rgba(235,174,82,0) 72%);
-  filter:blur(2px);animation:breathe 7s ease-in-out infinite;z-index:0;}
-@keyframes breathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
-
-/* ── PETALS ── */
-.petal{position:absolute;pointer-events:none;opacity:0;animation:drift linear infinite;z-index:0;}
+  filter:blur(3px);
+  animation:breathe 7s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:.85}50%{opacity:1}}
+.grain{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  opacity:.35;mix-blend-mode:multiply;
+  background-image:radial-gradient(rgba(120,90,50,.05) 1px,transparent 1px);
+  background-size:4px 4px;
+}
+.petal{position:absolute;pointer-events:none;z-index:0;opacity:0;animation:drift linear infinite;}
 @keyframes drift{
-  0%{transform:translateY(-30px) rotate(0);opacity:0}
-  10%{opacity:.6}90%{opacity:.6}
-  100%{transform:translateY(110vh) translateX(60px) rotate(200deg);opacity:0}
+  0%{transform:translateY(-20px) rotate(0);opacity:0}
+  10%{opacity:.55}90%{opacity:.55}
+  100%{transform:translateY(110vh) translateX(50px) rotate(180deg);opacity:0}
 }
 
-/* контент всегда выше декора */
-.anim,.rise,.lw,.s1-left,.s2-right,.s3-pad,.s4-pad,.s5-inner,
-.s13-left,.s14-inner,.letter-body,.lphoto,.lbody{position:relative;z-index:2;}
+/* ── КОНТЕНТ поверх декора ── */
+.slide-content{position:relative;z-index:2;}
 
-/* ── ENTRANCE ── */
-.anim{opacity:0;transform:translateY(22px);}
-.rise{opacity:0;transform:translateY(36px) scale(.985);}
-.slide.entering .anim,.slide.entering .rise{
+/* ── АНИМАЦИЯ ВХОДА ── */
+.anim{opacity:0;transform:translateY(20px);}
+.rise{opacity:0;transform:translateY(32px) scale(.988);}
+.slide.entering .anim,
+.slide.entering .rise{
   opacity:1;transform:none;
-  transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.78,.2,1);
+  transition:opacity .85s ease,transform 1.05s cubic-bezier(.2,.78,.2,1);
   transition-delay:calc(var(--i,0)*0.08s);
 }
-.slide.shown .anim,.slide.shown .rise{opacity:1;transform:none;transition:none;}
+.slide.shown .anim,
+.slide.shown .rise{opacity:1;transform:none;transition:none;}
 
-/* ── TYPE ── */
-.kicker{font-weight:400;letter-spacing:.36em;text-transform:uppercase;color:var(--terra);}
-.kicker.lead::before{content:"";display:inline-block;width:24px;height:1px;background:var(--terra);
-  vertical-align:middle;margin-right:12px;margin-bottom:3px;}
-.display{font-family:var(--serif);font-weight:500;line-height:1;color:var(--ink);}
+/* ── ТИПОГРАФИКА ── */
+.kicker{
+  font-weight:400;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--terra);font-size:clamp(11px,2.8vw,18px);
+}
+.kicker.lead::before{
+  content:"";display:inline-block;width:20px;height:1px;
+  background:var(--terra);vertical-align:middle;
+  margin-right:10px;margin-bottom:2px;
+}
+.display{font-family:var(--serif);font-weight:500;line-height:1.02;color:var(--ink);}
 .lede{font-family:var(--serif);font-style:italic;color:var(--ink-soft);}
-.body-t{font-family:var(--body);line-height:1.6;color:var(--ink);}
+.body-t{font-family:var(--body);line-height:1.62;color:var(--ink);}
 em.warm{font-style:italic;color:var(--terra);}
 .rule{height:1px;background:var(--line);}
 .sig{font-family:var(--hand);color:var(--terra);line-height:1.1;}
-.quote-mark{font-family:var(--serif);font-style:italic;color:var(--gold-soft);opacity:.5;line-height:.6;pointer-events:none;}
 
-/* ── PHOTO FRAME ── */
-.pf{background:#fff;padding:10px 10px 10px;border-radius:3px;
-  box-shadow:0 20px 50px -20px rgba(90,55,25,.55),0 3px 10px -4px rgba(90,55,25,.2);}
+/* ── ФОТО РАМКИ ── */
+.pf{
+  background:#fff;padding:10px;border-radius:3px;
+  box-shadow:0 16px 40px -16px rgba(90,55,25,.5),0 2px 8px -3px rgba(90,55,25,.18);
+}
 .pf .win{overflow:hidden;border-radius:2px;background:#e9ddca;}
 .pf img{display:block;width:100%;height:100%;object-fit:cover;}
-.pf.kb img{animation:kb 22s ease-in-out infinite alternate;}
-@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.pf.kb img{animation:kb 20s ease-in-out infinite alternate;}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.07)}}
 .tilt{transform:rotate(-2.2deg)}
-.tiltr{transform:rotate(2.3deg)}
-.cap{font-family:var(--hand);color:var(--terra);text-align:center;margin-top:5px;}
-.chip{font-family:var(--body);color:var(--ink-soft);white-space:nowrap;
-  border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.5);}
-
-/* ────────────────────────────
-   DESKTOP  ≥ 900px
-──────────────────────────── */
-@media(min-width:900px){
-  .slide{overflow:hidden;}
-  /* cover */
-  .s1-left{position:absolute;left:7%;top:0;bottom:0;width:50%;display:flex;flex-direction:column;justify-content:center;}
-  .s1-photo1{position:absolute;right:22%;top:11%;z-index:2;}
-  .s1-photo2{position:absolute;right:7%;bottom:9%;z-index:3;}
-  .s1-title{font-size:clamp(64px,6vw,115px);}
-  .s1-lede{font-size:clamp(22px,2vw,40px);max-width:600px;margin-top:28px;line-height:1.3;}
-  .s1-chips{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;}
-  .chip{font-size:clamp(14px,1.2vw,22px);padding:8px 20px;}
-  .kicker{font-size:clamp(13px,1.1vw,21px);}
-  /* vibe */
-  .s2-photo{position:absolute;left:7%;top:11%;}
-  .s2-right{position:absolute;left:42%;right:7%;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;}
-  .s2-title{font-size:clamp(52px,5.5vw,102px);}
-  .s2-item-title{font-family:var(--serif);font-size:clamp(22px,2vw,38px);color:var(--terra);}
-  .s2-item-body{font-size:clamp(15px,1.4vw,26px);margin-top:4px;max-width:680px;}
-  /* logic */
-  .s3-pad{position:absolute;inset:0;padding:5% 7%;display:flex;flex-direction:column;}
-  .s3-title{font-size:clamp(38px,3.8vw,70px);max-width:90%;}
-  .s3-list{columns:2;column-gap:48px;font-size:clamp(13px,1.25vw,23px);line-height:1.35;}
-  .s3-photos{display:flex;flex-direction:column;gap:20px;flex:0 0 auto;}
-  /* lucky */
-  .s4-pad{position:absolute;inset:0;padding:5% 7%;display:flex;flex-direction:column;}
-  .s4-title{font-size:clamp(30px,2.8vw,52px);max-width:80%;}
-  .s4-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 48px;margin-top:40px;}
-  .s4-num{font-family:var(--serif);font-size:clamp(20px,1.8vw,34px);color:var(--gold);}
-  .s4-text{font-size:clamp(13px,1.25vw,23px);line-height:1.45;}
-  .s4-photos{display:flex;flex-direction:column;gap:20px;flex:0 0 auto;}
-  /* heart */
-  .s5-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 18%;}
-  .s5-title{font-size:clamp(60px,6.5vw,122px);font-style:italic;}
-  /* letter */
-  .lw{position:absolute;inset:0;display:flex;align-items:center;gap:6%;padding:6% 7%;}
-  .lw.rev{flex-direction:row-reverse;}
-  .lphoto{flex:0 0 auto;}
-  .lbody{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;position:relative;}
-  .lh-name{font-family:var(--serif);font-weight:600;font-size:clamp(38px,3.8vw,68px);color:var(--terra);margin-top:6px;line-height:1;}
-  .lt{font-family:var(--body);color:var(--ink);}
-  .lt p{margin-bottom:12px;}
-  .lt p:last-child{margin-bottom:0;}
-  /* emir */
-  .s13-left{position:absolute;left:7%;top:0;bottom:0;width:46%;display:flex;flex-direction:column;justify-content:center;}
-  .s13-title{font-size:clamp(50px,5vw,90px);}
-  /* final */
-  .s14-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 28%;}
-  .s14-title{font-size:clamp(42px,4.2vw,78px);font-style:italic;color:#fff8ee;}
-  .s14-sig{font-size:clamp(28px,3vw,54px);color:#fff;}
+.tiltr{transform:rotate(2.2deg)}
+.cap{font-family:var(--hand);color:var(--terra);text-align:center;margin-top:5px;font-size:clamp(14px,3vw,24px);}
+.chip{
+  font-family:var(--body);color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:999px;
+  background:rgba(255,255,255,.5);
+  font-size:clamp(12px,3vw,18px);padding:5px 14px;
+  white-space:nowrap;
 }
 
-/* ────────────────────────────
-   MOBILE  < 900px
-──────────────────────────── */
-@media(max-width:899px){
-  .slide{overflow-y:auto;padding-bottom:72px;}
+/* ═══════════════════════
+   МОБИЛЕ  < 768px
+═══════════════════════ */
+@media(max-width:767px){
 
-  /* cover */
-  .s1-left{padding:10vw 6vw 6vw;}
-  .s1-photo1,.s1-photo2{display:none;}
-  .s1-title{font-size:clamp(42px,11vw,72px);line-height:1.0;}
-  .s1-lede{font-size:clamp(18px,4.5vw,28px);margin-top:18px;line-height:1.35;}
-  .s1-chips{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;}
-  .chip{font-size:clamp(12px,3.5vw,17px);padding:6px 14px;}
-  .kicker{font-size:clamp(11px,3vw,15px);}
-  .s1-mobile-photo{display:block;margin:0 auto 6vw;width:80vw;}
-  /* vibe */
-  .s2-photo{display:none;}
-  .s2-right{padding:10vw 6vw 6vw;}
-  .s2-title{font-size:clamp(38px,10vw,62px);}
-  .s2-item-title{font-family:var(--serif);font-size:clamp(18px,5vw,28px);color:var(--terra);}
-  .s2-item-body{font-size:clamp(14px,4vw,20px);margin-top:4px;}
-  /* logic */
-  .s3-pad{padding:10vw 6vw 6vw;}
-  .s3-title{font-size:clamp(26px,7vw,44px);}
-  .s3-list{columns:1;font-size:clamp(13px,3.8vw,18px);line-height:1.4;}
-  .s3-photos{display:none;}
-  /* lucky */
-  .s4-pad{padding:10vw 6vw 6vw;}
-  .s4-title{font-size:clamp(22px,6vw,36px);}
-  .s4-grid{display:flex;flex-direction:column;gap:14px;margin-top:20px;}
-  .s4-num{font-family:var(--serif);font-size:clamp(18px,5vw,26px);color:var(--gold);}
-  .s4-text{font-size:clamp(13px,3.8vw,18px);line-height:1.5;}
-  .s4-photos{display:none;}
-  /* heart */
-  .s5-inner{padding:14vw 8vw;text-align:center;display:flex;flex-direction:column;align-items:center;}
-  .s5-title{font-size:clamp(46px,13vw,80px);font-style:italic;margin-top:10px;}
-  /* letter */
-  .lw,.lw.rev{display:flex;flex-direction:column;padding:10vw 6vw 6vw;gap:0;}
-  .lphoto{margin:0 auto 5vw;}
-  .lbody{position:static;}
-  .lh-name{font-family:var(--serif);font-weight:600;font-size:clamp(32px,9vw,52px);color:var(--terra);margin-top:4px;line-height:1;}
-  .lt{font-family:var(--body);color:var(--ink);}
+  /* Обложка */
+  .cover-wrap{padding:8vw 6vw 80px;}
+  .cover-title{font-size:clamp(40px,12vw,68px);margin-top:14px;line-height:1.0;}
+  .cover-lede{font-size:clamp(17px,4.5vw,26px);margin-top:14px;line-height:1.4;}
+  .cover-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+  .cover-photo-wrap{
+    width:72vw;margin:18px auto 0;
+  }
+  .cover-photo-desk{display:none;}
+
+  /* Вайб */
+  .vibe-wrap{padding:8vw 6vw 80px;}
+  .vibe-photo{width:60vw;margin:0 auto 20px;}
+  .vibe-title{font-size:clamp(36px,10vw,60px);margin-top:12px;}
+  .vibe-item-t{font-family:var(--serif);font-size:clamp(17px,4.5vw,26px);color:var(--terra);margin-bottom:4px;}
+  .vibe-item-b{font-size:clamp(13px,3.8vw,19px);}
+  .vibe-items{display:flex;flex-direction:column;gap:18px;margin-top:20px;}
+
+  /* Логика */
+  .logic-wrap{padding:8vw 6vw 80px;}
+  .logic-title{font-size:clamp(24px,7vw,42px);margin-top:10px;}
+  .logic-lede{font-size:clamp(13px,3.6vw,17px);margin:10px 0 16px;font-style:italic;}
+  .logic-list{list-style:none;font-size:clamp(13px,3.6vw,17px);line-height:1.45;}
+  .logic-list li{margin-bottom:10px;padding-left:14px;position:relative;}
+  .logic-list li::before{content:"·";position:absolute;left:0;color:var(--terra);}
+  .logic-outro{font-size:clamp(13px,3.6vw,17px);margin-top:14px;font-style:italic;}
+  .logic-photos{display:none;}
+
+  /* Повезло */
+  .lucky-wrap{padding:8vw 6vw 80px;}
+  .lucky-title{font-size:clamp(20px,5.5vw,34px);margin-top:10px;}
+  .lucky-list{display:flex;flex-direction:column;gap:12px;margin-top:18px;}
+  .lucky-num{font-family:var(--serif);font-size:clamp(18px,5vw,26px);color:var(--gold);flex-shrink:0;}
+  .lucky-text{font-size:clamp(13px,3.8vw,18px);line-height:1.5;}
+  .lucky-photos{display:none;}
+
+  /* Сердце */
+  .heart-wrap{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    text-align:center;padding:10vw 8vw 80px;
+  }
+  .heart-title{font-size:clamp(44px,13vw,76px);font-style:italic;margin-top:10px;}
+  .heart-body{font-size:clamp(15px,4vw,22px);margin-top:16px;line-height:1.55;}
+  .heart-hand{font-family:var(--hand);font-size:clamp(20px,5.5vw,34px);color:var(--terra);margin-top:22px;}
+
+  /* Письма */
+  .letter-wrap{padding:8vw 6vw 80px;display:flex;flex-direction:column;}
+  .letter-photo-wrap{width:min(68vw,280px);margin:0 auto 16px;}
+  .letter-qmark{font-family:var(--serif);font-style:italic;font-size:70px;color:var(--gold-soft);opacity:.45;line-height:.6;margin-bottom:-10px;}
+  .lh-name{font-family:var(--serif);font-weight:600;font-size:clamp(30px,9vw,50px);color:var(--terra);line-height:1;margin:6px 0 12px;}
+  .lt{font-family:var(--body);color:var(--ink);font-size:clamp(14px,3.8vw,19px);line-height:1.6;}
   .lt p{margin-bottom:10px;}
   .lt p:last-child{margin-bottom:0;}
-  /* emir */
-  .s13-left{padding:10vw 6vw 6vw;}
-  .s13-title{font-size:clamp(36px,10vw,62px);}
-  .s13-photos{display:none;}
-  /* final */
-  .s14-inner{padding:14vw 8vw;text-align:center;display:flex;flex-direction:column;align-items:center;}
-  .s14-title{font-size:clamp(36px,10vw,60px);font-style:italic;color:#fff8ee;margin:14px 0;}
-  .s14-sig{font-size:clamp(24px,7vw,42px);color:#fff;}
-  .s14-photos{display:none;}
-  /* quote mark smaller */
-  .quote-mark{font-size:80px !important;top:-28px !important;left:-4px !important;}
+  .letter-sig{font-family:var(--hand);color:var(--terra);font-size:clamp(20px,5.5vw,34px);margin-top:14px;line-height:1.1;}
+
+  /* Эмир */
+  .emir-wrap{padding:8vw 6vw 80px;}
+  .emir-title{font-size:clamp(34px,10vw,58px);margin-top:12px;}
+  .emir-body{font-size:clamp(14px,3.8vw,19px);line-height:1.6;margin-top:14px;}
+  .emir-photos{display:none;}
+
+  /* Финал */
+  .final-wrap{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    text-align:center;padding:10vw 8vw 80px;
+  }
+  .final-photos{display:none;}
+  .final-body{font-size:clamp(14px,3.8vw,19px);color:#FFF2DD;line-height:1.6;max-width:600px;}
+  .final-title{font-size:clamp(34px,10vw,60px);font-style:italic;color:#fff8ee;margin:16px 0;}
+  .final-sig{font-family:var(--hand);font-size:clamp(22px,6.5vw,40px);color:#fff;line-height:1.1;max-width:600px;}
+}
+
+/* ═══════════════════════
+   ДЕСКТОП  ≥ 768px
+═══════════════════════ */
+@media(min-width:768px){
+  .slide{overflow:hidden;}
+
+  /* Обложка */
+  .cover-wrap{position:absolute;left:6%;top:0;bottom:0;width:52%;display:flex;flex-direction:column;justify-content:center;}
+  .cover-photo-mobile{display:none;}
+  .cover-title{font-size:clamp(58px,5.8vw,110px);line-height:.98;margin-top:22px;}
+  .cover-lede{font-size:clamp(20px,1.9vw,38px);max-width:540px;margin-top:24px;line-height:1.3;}
+  .cover-chips{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;}
+  .cover-photo-desk.p1{position:absolute;right:22%;top:10%;z-index:2;}
+  .cover-photo-desk.p2{position:absolute;right:6%;bottom:8%;z-index:3;}
+
+  /* Вайб */
+  .vibe-wrap{position:absolute;left:40%;right:6%;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;}
+  .vibe-photo{position:absolute;left:6%;top:10%;z-index:2;}
+  .vibe-photo-m{display:none;}
+  .vibe-title{font-size:clamp(48px,5.2vw,98px);margin-top:18px;}
+  .vibe-item-t{font-family:var(--serif);font-size:clamp(20px,1.9vw,36px);color:var(--terra);}
+  .vibe-item-b{font-size:clamp(14px,1.3vw,25px);margin-top:4px;max-width:620px;}
+  .vibe-items{display:flex;flex-direction:column;gap:clamp(14px,2vw,26px);margin-top:16px;}
+
+  /* Логика */
+  .logic-wrap{position:absolute;inset:0;padding:5% 6%;display:flex;flex-direction:column;}
+  .logic-title{font-size:clamp(34px,3.6vw,66px);max-width:88%;}
+  .logic-lede{font-size:clamp(14px,1.5vw,26px);margin:10px 0 20px;font-style:italic;}
+  .logic-inner{display:flex;gap:36px;flex:1;align-items:flex-start;}
+  .logic-list{list-style:none;columns:2;column-gap:40px;font-size:clamp(12px,1.2vw,22px);line-height:1.35;flex:1;}
+  .logic-list li{margin-bottom:10px;break-inside:avoid;}
+  .logic-outro{font-size:clamp(13px,1.4vw,26px);margin-top:14px;font-style:italic;}
+  .logic-photos{display:flex;flex-direction:column;gap:16px;flex-shrink:0;}
+
+  /* Повезло */
+  .lucky-wrap{position:absolute;inset:0;padding:4% 6%;display:flex;flex-direction:column;}
+  .lucky-title{font-size:clamp(26px,2.6vw,50px);margin-top:10px;max-width:80%;}
+  .lucky-inner{display:flex;gap:36px;margin-top:28px;}
+  .lucky-list{display:grid;grid-template-columns:1fr 1fr;gap:16px 44px;flex:1;}
+  .lucky-num{font-family:var(--serif);font-size:clamp(18px,1.7vw,32px);color:var(--gold);flex-shrink:0;}
+  .lucky-text{font-size:clamp(12px,1.2vw,22px);line-height:1.45;}
+  .lucky-photos{display:flex;flex-direction:column;gap:16px;flex-shrink:0;}
+
+  /* Сердце */
+  .heart-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 16%;}
+  .heart-title{font-size:clamp(56px,6.2vw,116px);font-style:italic;margin-top:12px;}
+  .heart-body{font-size:clamp(16px,1.7vw,28px);margin-top:18px;line-height:1.55;max-width:800px;}
+  .heart-hand{font-family:var(--hand);font-size:clamp(20px,3.2vw,38px);color:var(--terra);margin-top:28px;}
+
+  /* Письма */
+  .letter-wrap{position:absolute;inset:0;display:flex;align-items:center;gap:5%;padding:5% 6%;}
+  .letter-wrap.rev{flex-direction:row-reverse;}
+  .letter-photo-wrap{flex:0 0 auto;}
+  .letter-body-wrap{flex:1;min-width:0;position:relative;}
+  .letter-qmark{font-family:var(--serif);font-style:italic;font-size:clamp(80px,9vw,150px);color:var(--gold-soft);opacity:.45;line-height:.6;position:absolute;left:-6px;top:-36px;}
+  .lh-name{font-family:var(--serif);font-weight:600;font-size:clamp(34px,3.6vw,64px);color:var(--terra);line-height:1;margin:6px 0 14px;}
+  .lt{font-family:var(--body);color:var(--ink);font-size:clamp(13px,1.25vw,22px);line-height:1.55;}
+  .lt p{margin-bottom:11px;}
+  .lt p:last-child{margin-bottom:0;}
+  .letter-sig{font-family:var(--hand);color:var(--terra);font-size:clamp(18px,2.3vw,38px);margin-top:14px;line-height:1.1;}
+
+  /* Эмир */
+  .emir-wrap{position:absolute;left:6%;top:0;bottom:0;width:46%;display:flex;flex-direction:column;justify-content:center;}
+  .emir-title{font-size:clamp(46px,4.8vw,86px);margin-top:14px;}
+  .emir-body{font-size:clamp(14px,1.4vw,25px);line-height:1.6;margin-top:16px;max-width:560px;}
+  .emir-photos{display:block;}
+
+  /* Финал */
+  .final-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 26%;}
+  .final-photos{display:block;}
+  .final-body{font-size:clamp(14px,1.4vw,25px);color:#FFF2DD;line-height:1.6;max-width:560px;}
+  .final-title{font-size:clamp(38px,4vw,74px);font-style:italic;color:#fff8ee;margin:18px 0;}
+  .final-sig{font-family:var(--hand);font-size:clamp(26px,2.8vw,52px);color:#fff;line-height:1.1;max-width:640px;}
 }
 
 /* ── NAV ── */
 #nav{
-  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:14px;z-index:100;
-  background:rgba(28,20,13,.6);backdrop-filter:blur(10px);
-  border-radius:999px;padding:8px 18px;
-  border:1px solid rgba(255,255,255,.08);
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  z-index:200;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(28,20,13,.62);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-radius:999px;padding:8px 16px;
+  border:1px solid rgba(255,255,255,.1);
 }
 #nav button{
   background:none;border:none;cursor:pointer;
-  color:rgba(255,255,255,.75);font-size:20px;line-height:1;
+  color:rgba(255,255,255,.8);font-size:20px;
   padding:4px 8px;border-radius:999px;
-  transition:background .15s,color .15s;
-  -webkit-tap-highlight-color:transparent;
+  min-width:36px;min-height:36px;
+  transition:background .15s;
 }
-#nav button:hover{background:rgba(255,255,255,.12);color:#fff;}
-#nav button:disabled{opacity:.22;cursor:default;}
-#counter{font-family:var(--serif);font-size:17px;color:rgba(255,255,255,.65);min-width:44px;text-align:center;}
-#dots{display:flex;gap:6px;align-items:center;}
+#nav button:active{background:rgba(255,255,255,.15);}
+#nav button:disabled{opacity:.2;cursor:default;}
+#counter{font-family:var(--serif);font-size:16px;color:rgba(255,255,255,.65);min-width:44px;text-align:center;}
+#dots{display:flex;gap:5px;align-items:center;}
 .dot-btn{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,.28);border:none;cursor:pointer;padding:0;
-  transition:background .2s,transform .2s;flex-shrink:0;
+  width:6px;height:6px;border-radius:50%;padding:0;border:none;cursor:pointer;
+  background:rgba(255,255,255,.25);
+  transition:background .2s,transform .2s;
 }
-.dot-btn.on{background:var(--gold-soft);transform:scale(1.4);}
-@media(max-width:700px){
-  #dots{display:none;}
-  #counter{min-width:52px;}
-}
+.dot-btn.on{background:var(--gold-soft);transform:scale(1.45);}
+@media(max-width:600px){#dots{display:none;}}
 </style>
 </head>
 <body>
 
-<div id="deck">
-<div id="track">
+<div id="deck"><div id="track">
 
-<!-- ===== 1 · ОБЛОЖКА ===== -->
-<div class="slide" data-label="Обложка">
-  <div class="sun" style="width:min(800px,120vw);height:min(800px,120vw);right:-20%;top:-30%;opacity:.85"></div>
-  <!-- mobile-only photo -->
-  <div style="display:none" class="s1-mobile-photo rise" style="--i:1">
-    <div class="pf kb tiltr"><div class="win" style="width:72vw;height:90vw;"><img src="photos/aliya-1-1.jpg" alt="Алия" loading="lazy"></div></div>
-  </div>
-  <div class="s1-left">
+<!-- ══ 1 · ОБЛОЖКА ══ -->
+<div class="slide">
+  <div class="sun" style="width:min(700px,110vw);height:min(700px,110vw);right:-18%;top:-28%;"></div>
+  <div class="cover-wrap slide-content">
     <div class="kicker lead anim" style="--i:0">☀ Лето · Тепло · Свет</div>
-    <h1 class="display s1-title anim" style="--i:1">Начало лета —<br><span style="font-style:italic;color:var(--terra)">начало тепла</span></h1>
-    <p class="lede s1-lede anim" style="--i:3">Мы хотим рассказать про человека, который для нас — <em class="warm">и есть лето.</em></p>
-    <div class="s1-chips anim" style="--i:4">
+    <h1 class="display cover-title anim" style="--i:1">Начало лета —<br><em style="color:var(--terra)">начало тепла</em></h1>
+    <p class="lede cover-lede anim" style="--i:2">Мы хотим рассказать про человека, который для нас — <em class="warm">и есть лето.</em></p>
+    <div class="cover-chips anim" style="--i:3">
       <span class="chip">☀ солнце</span><span class="chip">✦ свет</span>
       <span class="chip">✿ цветы</span><span class="chip">◇ лёгкость</span>
     </div>
+    <!-- фото только мобиле -->
+    <div class="cover-photo-mobile rise" style="--i:2">
+      <div style="width:70vw;margin:20px auto 0;">
+        <div class="pf kb tiltr"><div class="win" style="height:88vw;"><img src="photos/aliya-1-1.jpg" alt="Алия" loading="eager"></div></div>
+      </div>
+    </div>
   </div>
-  <div class="s1-photo1 rise" style="--i:2">
-    <div class="pf kb tiltr"><div class="win" style="width:min(380px,22vw);height:min(500px,29vw);"><img src="photos/aliya-1-1.jpg" alt="Алия" loading="lazy"></div></div>
+  <!-- фото десктоп -->
+  <div class="cover-photo-desk p1 rise slide-content" style="--i:2">
+    <div class="pf kb tiltr"><div class="win" style="width:min(360px,21vw);height:min(480px,28vw);"><img src="photos/aliya-1-1.jpg" alt="Алия" loading="eager"></div></div>
   </div>
-  <div class="s1-photo2 rise" style="--i:4">
-    <div class="pf tilt"><div class="win" style="width:min(320px,19vw);height:min(260px,15vw);"><img src="photos/aliya-1-2.jpg" alt="Алия" loading="lazy" style="object-position:50% 35%"></div></div>
-    <div class="cap" style="font-size:clamp(16px,1.5vw,26px)">наше лето ☀</div>
+  <div class="cover-photo-desk p2 rise slide-content" style="--i:4">
+    <div class="pf tilt"><div class="win" style="width:min(300px,18vw);height:min(250px,14vw);"><img src="photos/aliya-1-2.jpg" alt="Алия" loading="lazy" style="object-position:50% 35%"></div></div>
+    <div class="cap">наше лето ☀</div>
   </div>
   <div class="grain"></div>
 </div>
 
-<!-- ===== 2 · ВАЙБ ===== -->
-<div class="slide" data-label="Вайб">
-  <div class="sun" style="width:min(420px,60vw);height:min(420px,60vw);left:-15%;bottom:-20%;opacity:.5"></div>
-  <div class="s2-photo rise" style="--i:1">
-    <div class="pf kb tilt"><div class="win" style="width:min(480px,28vw);height:min(720px,42vw);"><img src="photos/aliya-2-1.jpg" alt="Алия" loading="lazy" style="object-position:50% 28%"></div></div>
-  </div>
-  <div class="s2-right">
-    <div class="kicker lead anim" style="--i:0">Вайб и очень особенная энергия</div>
-    <h2 class="display s2-title anim" style="--i:1;margin-top:14px">Алия — это <em style="font-style:italic;color:var(--terra)">вайб.</em></h2>
-    <div class="rule anim" style="--i:2;margin:clamp(18px,3vw,40px) 0;"></div>
-    <div style="display:flex;flex-direction:column;gap:clamp(16px,2.5vw,28px)">
+<!-- ══ 2 · ВАЙБ ══ -->
+<div class="slide">
+  <div class="sun" style="width:min(400px,55vw);height:min(400px,55vw);left:-14%;bottom:-18%;opacity:.5;"></div>
+  <div class="vibe-wrap slide-content">
+    <div class="kicker lead anim" style="--i:0">Вайб и особенная энергия</div>
+    <h2 class="display vibe-title anim" style="--i:1">Алия — это <em style="color:var(--terra)">вайб.</em></h2>
+    <!-- фото мобиле -->
+    <div class="vibe-photo-m rise" style="--i:1">
+      <div style="width:60vw;margin:0 auto 16px;">
+        <div class="pf kb tilt"><div class="win" style="height:76vw;"><img src="photos/aliya-2-1.jpg" alt="Алия" loading="lazy" style="object-position:50% 28%"></div></div>
+      </div>
+    </div>
+    <div class="rule anim" style="--i:2;margin:clamp(14px,2.5vw,36px) 0;"></div>
+    <div class="vibe-items">
       <div class="anim" style="--i:3">
-        <div class="s2-item-title">◯&nbsp; Лёгкость и глубина</div>
-        <p class="body-t s2-item-body">В ней удивительно сочетаются лёгкость и глубина, спокойствие и движение, «своя» простота и внутренняя сила, которой нет у многих взрослых.</p>
+        <div class="vibe-item-t">◯ Лёгкость и глубина</div>
+        <p class="body-t vibe-item-b">В ней удивительно сочетаются лёгкость и глубина, спокойствие и движение, «своя» простота и внутренняя сила, которой нет у многих взрослых.</p>
       </div>
       <div class="anim" style="--i:4">
-        <div class="s2-item-title">◎&nbsp; Ясная голова</div>
-        <p class="body-t s2-item-body">Умеет чувствовать людей, но при этом всегда остаётся с ясной головой и здравым смыслом — поэтому её решения почти всегда точные и взвешенные.</p>
+        <div class="vibe-item-t">◎ Ясная голова</div>
+        <p class="body-t vibe-item-b">Умеет чувствовать людей, но при этом всегда остаётся с ясной головой и здравым смыслом — поэтому её решения почти всегда точные и взвешенные.</p>
       </div>
       <div class="anim" style="--i:5">
-        <div class="s2-item-title">◇&nbsp; Внутренняя гармония</div>
-        <p class="body-t s2-item-body">Свой ритм, своё пространство, своё состояние тишины — и мы любим и принимаем её свободу <span style="color:var(--rose)">🤍</span></p>
+        <div class="vibe-item-t">◇ Внутренняя гармония</div>
+        <p class="body-t vibe-item-b">Свой ритм, своё пространство, своё состояние тишины — и мы любим и принимаем её свободу <span style="color:var(--rose)">🤍</span></p>
       </div>
     </div>
+  </div>
+  <!-- фото десктоп -->
+  <div class="vibe-photo rise slide-content" style="--i:1">
+    <div class="pf kb tilt"><div class="win" style="width:min(450px,26vw);height:min(690px,40vw);"><img src="photos/aliya-2-1.jpg" alt="Алия" loading="lazy" style="object-position:50% 28%"></div></div>
   </div>
   <div class="grain"></div>
 </div>
 
-<!-- ===== 3 · НЕ ОБЪЯСНИТЬ ЛОГИКОЙ ===== -->
-<div class="slide" data-label="Не объяснить логикой" style="background:linear-gradient(158deg,#F6CE86 0%,#EC9F66 54%,#E08260 100%);color:#fff8ee;">
-  <div class="sun" style="width:min(600px,80vw);height:min(600px,80vw);right:-15%;top:-20%;opacity:.6;background:radial-gradient(circle,#FFF0CE 0%,rgba(255,240,206,.2) 45%,rgba(255,240,206,0) 70%);"></div>
-  <div class="s3-pad">
+<!-- ══ 3 · ЛОГИКА ══ -->
+<div class="slide" style="background:linear-gradient(158deg,#F6CE86 0%,#EC9F66 54%,#E08260 100%);color:#fff8ee;">
+  <div class="sun" style="width:min(560px,75vw);height:min(560px,75vw);right:-14%;top:-18%;opacity:.55;background:radial-gradient(circle,#FFF0CE 0%,rgba(255,240,206,.2) 45%,rgba(255,240,206,0) 70%);"></div>
+  <div class="logic-wrap slide-content">
     <div class="kicker lead anim" style="--i:0;color:#FFF1D8;">Ощущение, а не объяснение</div>
-    <h2 class="display s3-title anim" style="--i:1;margin-top:10px;color:#fff8ee;">Алия — это не человек, которого можно <span style="font-style:italic">объяснить логикой.</span></h2>
-    <p class="lede anim" style="--i:2;font-size:clamp(15px,1.6vw,28px);color:#FFEFD6;margin:10px 0 18px;font-style:italic;">Это ощущение. И сейчас попробуем примерно описать…</p>
-    <div style="display:flex;gap:40px;align-items:flex-start;flex:1;">
-      <ul class="s3-list anim" style="--i:3;list-style:none;color:#fff7ec;">
-        <li style="margin-bottom:11px">Как 37 просроченных задач в СРМ, но не штрафуют — потому что Серёжи нет на работе! ✨</li>
-        <li style="margin-bottom:11px">Как победа на реалити «Алёны, блин»</li>
-        <li style="margin-bottom:11px">Как свежий глоток воздуха после 8-часового дня в шерстяном опен-спейсе на Маркова</li>
-        <li style="margin-bottom:11px">Как ответ в директ от Блейк Лайвли</li>
-        <li style="margin-bottom:11px">Как чудеса и победа добра в «Гарри Поттере»</li>
-        <li style="margin-bottom:11px">Как 7 кандидатов на сопровод — и Азиза всех одобрила</li>
-        <li style="margin-bottom:11px">Как поставить «авиарежим» и рвануть на море, а на счету 1 000 000 $</li>
-        <li style="margin-bottom:11px">Как проснуться в 7 утра: тебе 8, ты на летних каникулах и играешь с друзьями всё лето</li>
-        <li style="margin-bottom:11px">Как выиграть катку вчистую, будучи мафией</li>
-        <li style="margin-bottom:11px">Как ты в 3 классе: мама готовит завтрак, по телеку «Эй, Арнольд», а школу отменили</li>
-        <li style="margin-bottom:11px">Как игра в покер отчаянных — Бри, Линетт, Габи и Сюзан</li>
-        <li style="margin-bottom:11px">Как вылеченная челюсть и первый кусок пиццы после 2-месячного детокса</li>
-        <li style="color:#fff;font-style:italic;margin-bottom:11px">И самое главное — как человек, рядом с которым у всех начинает всё налаживаться</li>
+    <h2 class="display logic-title anim" style="--i:1;color:#fff8ee;">Алия — это не человек, которого можно <em>объяснить логикой.</em></h2>
+    <p class="logic-lede anim" style="--i:2;color:#FFEFD6;">Это ощущение. И сейчас попробуем примерно описать…</p>
+    <div class="logic-inner">
+      <ul class="logic-list anim" style="--i:3;color:#fff7ec;">
+        <li>Как 37 просроченных задач в СРМ, но не штрафуют — потому что Серёжи нет на работе! ✨</li>
+        <li>Как победа на реалити «Алёны, блин»</li>
+        <li>Как свежий глоток воздуха после 8-часового дня в шерстяном опен-спейсе на Маркова</li>
+        <li>Как ответ в директ от Блейк Лайвли</li>
+        <li>Как чудеса и победа добра в «Гарри Поттере»</li>
+        <li>Как 7 кандидатов на сопровод — и Азиза всех одобрила</li>
+        <li>Как поставить «авиарежим» и рвануть на море, а на счету 1 000 000 $</li>
+        <li>Как проснуться в 7 утра: тебе 8, ты на летних каникулах и играешь с друзьями всё лето</li>
+        <li>Как выиграть катку вчистую, будучи мафией</li>
+        <li>Как ты в 3 классе: мама готовит завтрак, по телеку «Эй, Арнольд», а школу отменили</li>
+        <li>Как игра в покер отчаянных — Бри, Линетт, Габи и Сюзан</li>
+        <li>Как вылеченная челюсть и первый кусок пиццы после 2-месячного детокса</li>
+        <li style="color:#fff;font-style:italic;">И главное — как человек, рядом с которым у всех начинает всё налаживаться</li>
       </ul>
-      <div class="s3-photos" style="display:flex;flex-direction:column;gap:18px;">
-        <div class="rise" style="--i:4"><div class="pf tiltr"><div class="win" style="width:min(300px,17vw);height:min(210px,12vw);"><img src="photos/aliya-3-1.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="rise" style="--i:6"><div class="pf tilt"><div class="win" style="width:min(270px,16vw);height:min(200px,11.5vw);"><img src="photos/aliya-3-2.jpg" alt="" loading="lazy"></div></div></div>
+      <div class="logic-photos">
+        <div class="rise" style="--i:4"><div class="pf tiltr"><div class="win" style="width:min(280px,16vw);height:min(200px,11.5vw);"><img src="photos/aliya-3-1.jpg" alt="" loading="lazy"></div></div></div>
+        <div class="rise" style="--i:5"><div class="pf tilt"><div class="win" style="width:min(250px,15vw);height:min(190px,11vw);"><img src="photos/aliya-3-2.jpg" alt="" loading="lazy"></div></div></div>
       </div>
     </div>
-    <p class="lede anim" style="--i:7;font-size:clamp(14px,1.5vw,27px);color:#FFF3DC;margin-top:14px;">
-      …и, кажется, никакие сравнения всё равно не передают её полностью. <span style="color:#fff;font-style:italic">Алия, ты уникальный человек, и каждый из нас этим восхищается.</span>
-    </p>
-  </div>
-  <div class="grain" style="opacity:.2"></div>
-</div>
-
-<!-- ===== 4 · НАМ ПОВЕЗЛО ===== -->
-<div class="slide" data-label="Нам повезло">
-  <div class="sun" style="width:min(460px,60vw);height:min(460px,60vw);right:-15%;top:-20%;opacity:.55"></div>
-  <div class="s4-pad">
-    <div class="kicker lead anim" style="--i:0">С любовью о ней</div>
-    <h2 class="display s4-title anim" style="--i:1;margin-top:10px;">«Нам повезло, что у нас есть <em style="font-style:italic;color:var(--terra)">такой человек, как ты</em>»</h2>
-    <div style="display:flex;gap:40px;">
-      <div class="s4-grid" style="flex:1">
-        <div class="anim" style="--i:2;display:flex;gap:12px"><div class="s4-num">01</div><p class="body-t s4-text">Иногда мы не понимаем, чем она питается: владеет компанией Job2Day, где она и HR-директор, и лучший продажник, и деловой операционщик, и высококвалифицированный турагент 💅🏻, да ещё и в ОКК вносит большой вклад.</p></div>
-        <div class="anim" style="--i:3;display:flex;gap:12px"><div class="s4-num">02</div><p class="body-t s4-text">Может устать после сложного дня, но всё равно вечером добирает порцию стресса от 3 серий «Титанов» ✨</p></div>
-        <div class="anim" style="--i:4;display:flex;gap:12px"><div class="s4-num">03</div><p class="body-t s4-text">Выросла с очень тёплыми семейными ценностями и несёт их дальше в каждое своё решение.</p></div>
-        <div class="anim" style="--i:5;display:flex;gap:12px"><div class="s4-num">04</div><p class="body-t s4-text">За каждым взвешенным советом и поддержкой мы бежим к ней — мудрости у неё выше крыши.</p></div>
-        <div class="anim" style="--i:6;display:flex;gap:12px"><div class="s4-num">05</div><p class="body-t s4-text">Умеет любить, искать свет в каждом, кто на её пути, не перестаёт верить в хороших людей и поступки.</p></div>
-        <div class="anim" style="--i:7;display:flex;gap:12px"><div class="s4-num">06</div><p class="body-t s4-text">Может замотивировать человека так, что он проснётся на следующий день с мыслью покорить Эверест в одного.</p></div>
-        <div class="anim" style="--i:8;display:flex;gap:12px"><div class="s4-num">07</div><p class="body-t s4-text">Любит жизнь в её простых моментах.</p></div>
-        <div class="anim" style="--i:9;display:flex;gap:12px"><div class="s4-num">08</div><p class="body-t s4-text">В её сердце так много любви, света и радости — и она делится этим без жадности, что каждый из нас начинает любить этот мир иначе.</p></div>
-        <div class="anim" style="--i:10;display:flex;gap:12px;grid-column:span 2"><div class="s4-num">09</div><p class="body-t s4-text">К ней хочется тянуться, говорить часами, смеяться до слёз, делиться сокровенным — зная, что не будет ни 1 % осуждения.</p></div>
-      </div>
-      <div class="s4-photos" style="flex:0 0 auto;display:flex;flex-direction:column;gap:18px;padding-top:4px;">
-        <div class="rise" style="--i:3"><div class="pf kb tiltr"><div class="win" style="width:min(280px,16vw);height:min(340px,19vw);"><img src="photos/aliya-4-1.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="rise" style="--i:6"><div class="pf tilt"><div class="win" style="width:min(260px,15vw);height:min(190px,11vw);"><img src="photos/aliya-4-2.jpg" alt="" loading="lazy"></div></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="grain"></div>
-</div>
-
-<!-- ===== 5 · СЕРДЦЕМ К СЕРДЦУ ===== -->
-<div class="slide" data-label="Сердцем к сердцу" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
-  <div class="sun" style="width:min(600px,90vw);height:min(600px,90vw);left:50%;top:-25%;transform:translateX(-50%);opacity:.45"></div>
-  <div class="s5-inner">
-    <div class="kicker lead anim" style="--i:0;">Самое личное</div>
-    <h2 class="display s5-title anim" style="--i:1;">Сердцем к сердцу</h2>
-    <div class="rule anim" style="--i:2;width:200px;margin:clamp(20px,3vw,36px) 0;"></div>
-    <p class="body-t anim" style="--i:2;font-size:clamp(15px,1.8vw,30px);max-width:700px;line-height:1.55;">
-      Здесь собраны очень личные и тёплые слова от самых близких. Мы ничего не переписывали — всё как есть, бережно и без искажений.
-    </p>
-    <p class="anim" style="--i:3;font-family:var(--hand);font-size:clamp(22px,3.5vw,40px);color:var(--terra);margin-top:clamp(20px,3vw,36px)">далее — слово за словом, от руки к сердцу →</p>
-  </div>
-  <div class="grain" style="opacity:.3"></div>
-</div>
-
-<!-- ===== 6 · МАМА ЭЛЯ ===== -->
-<div class="slide" data-label="Мама Эля">
-  <div class="sun" style="width:min(420px,60vw);height:min(420px,60vw);right:-15%;bottom:-20%;opacity:.45"></div>
-  <div class="lw">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tilt"><div class="win" style="width:min(340px,20vw);height:min(440px,26vw);max-width:70vw;"><img src="photos/aliya-5-1.jpg" alt="Мама Эля" loading="lazy" style="object-position:50% 35%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">мама Эля 🤍</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">слова от мамы</div>
-      <div class="lh-name anim" style="--i:1;">Мама Эля</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(13px,1.3vw,23px);line-height:1.55;margin-top:14px;">
-        <p>Моя дорогая доченька, моя Алёшенька, моя Алия!</p>
-        <p>С самого первого дня ты стала самым большим счастьем в моей жизни. Я бесконечно благодарна судьбе за то, что именно ты — моя дочь. Я всегда восхищаюсь твоей искренностью, твоей нежностью и тем, как бережно ты относишься к людям. Ты умеешь дарить тепло просто своим присутствием, и это очень редкий дар.</p>
-        <p>Когда я смотрю на вас с Эмиром, моё материнское сердце наполняется благодарностью и спокойствием. Желаю вам сохранить ту любовь, уважение, заботу и поддержку, что есть между вами сейчас.</p>
-        <p>Я хочу, чтобы ты всегда верила в себя так же сильно, как верю в тебя я. Пусть твоя доброта никогда не станет слабостью, а останется твоей самой красивой силой. Я горжусь тобой каждый день.</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(20px,2.5vw,40px);margin-top:14px;">С днём рождения, қызым! Люблю тебя! ❤️</div>
-    </div>
-  </div>
-  <div class="grain"></div>
-</div>
-
-<!-- ===== 7 · ПАПА АДЛЕТ ===== -->
-<div class="slide" data-label="Папа Адлет" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
-  <div class="sun" style="width:min(440px,60vw);height:min(440px,60vw);left:-15%;top:-20%;opacity:.4"></div>
-  <div class="lw rev">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tiltr"><div class="win" style="width:min(380px,22vw);height:min(500px,29vw);max-width:70vw;"><img src="photos/aliya-5-2.jpg" alt="Папа Адлет" loading="lazy" style="object-position:50% 35%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">папа Адлет 😘</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">слова от папы</div>
-      <div class="lh-name anim" style="--i:1;">Папа Адлет</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(15px,1.7vw,30px);line-height:1.6;margin-top:14px;">
-        <p>Доча ❤️, поздравляю тебя с днём рождения! Желаю тебе счастья, здоровья, любви и благополучия.</p>
-        <p>Ты уже такая большая — просто не верится. Всё как будто вчера было. Я тебя очень сильно люблю и горжусь тобой.</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(20px,2.5vw,42px);margin-top:14px;">Твой папа 😘 ❤️ &nbsp;Пока, мой сапленок 🐣</div>
-    </div>
-  </div>
-  <div class="grain" style="opacity:.3"></div>
-</div>
-
-<!-- ===== 8 · ПАПА МАУЛЕН ===== -->
-<div class="slide" data-label="Папа Маулен">
-  <div class="sun" style="width:min(420px,60vw);height:min(420px,60vw);right:-15%;bottom:-20%;opacity:.45"></div>
-  <div class="lw">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tilt"><div class="win" style="width:min(420px,25vw);height:min(350px,20vw);max-width:70vw;"><img src="photos/aliya-5-3.jpg" alt="Папа Маулен" loading="lazy" style="object-position:50% 45%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">папа Эмира — Маулен 💋</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">слова от папы Эмира</div>
-      <div class="lh-name anim" style="--i:1;">Папа Маулен</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(14px,1.5vw,27px);line-height:1.6;margin-top:14px;">
-        <p>Алия, я рад, что вы встретились с Эмиром. Всегда хотел, чтобы у меня была доча, — и вот ты появилась. Мы любим и ценим тебя 🥰</p>
-        <p>Поздравляю тебя с Днём Рождения! Желаю здоровья и чтобы наш сын тебя любил и уважал. Пусть все твои начинания реализуются, добивайся самых высоких целей. Оставайся всегда такой же нежной и доброй.</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(20px,2.5vw,42px);margin-top:14px;">Целую, ПАПА 💋</div>
-    </div>
-  </div>
-  <div class="grain"></div>
-</div>
-
-<!-- ===== 9 · МАМА ВЕРОНИКА ===== -->
-<div class="slide" data-label="Мама Вероника" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
-  <div class="sun" style="width:min(440px,60vw);height:min(440px,60vw);left:-15%;top:-20%;opacity:.4"></div>
-  <div class="lw rev">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tiltr"><div class="win" style="width:min(440px,26vw);height:min(340px,20vw);max-width:70vw;"><img src="photos/aliya-5-4.jpg" alt="Мама Вероника" loading="lazy" style="object-position:50% 45%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">мама Эмира — Вероника 💐</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">слова от мамы Эмира</div>
-      <div class="lh-name anim" style="--i:1;">Мама Вероника</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(14px,1.5vw,27px);line-height:1.6;margin-top:14px;">
-        <p>Алиюша, донечка наша ❤️, девочка наша нежная 🫶🏻. От всей души поздравляю тебя с твоим Днём Рождения! 💐</p>
-        <p>Желаю исполнения самых заветных желаний! Пусть твои глазки никогда не плачут от горя, только от радости.</p>
-        <p>Вот у нас не было дочки — а теперь она у нас есть. Мы благодарим Всевышнего, что ты у нас появилась. Любим тебя, обнимаем и целуем в твои мягкие щёчки.</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(20px,2.5vw,42px);margin-top:14px;">МАМА 💋</div>
-    </div>
-  </div>
-  <div class="grain" style="opacity:.3"></div>
-</div>
-
-<!-- ===== 10 · ДАНАЙ ===== -->
-<div class="slide" data-label="Данай">
-  <div class="sun" style="width:min(420px,60vw);height:min(420px,60vw);right:-15%;bottom:-20%;opacity:.45"></div>
-  <div class="lw">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tilt"><div class="win" style="width:min(380px,22vw);height:min(500px,29vw);max-width:70vw;"><img src="photos/aliya-5-5.jpg" alt="Данай" loading="lazy" style="object-position:50% 30%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">с любовью, Данай</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">дословно</div>
-      <div class="lh-name anim" style="--i:1;">Данай</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(16px,2vw,36px);line-height:1.55;margin-top:14px;">
-        <p>Алия…)))</p>
-        <p>Я тебя люблю больше всех на свете!</p>
-        <p>Я Аллаху даю возможность, чтобы у тебя очень много было возможностей.</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(22px,3vw,50px);margin-top:14px;">Әминь 🤲</div>
-    </div>
-  </div>
-  <div class="grain"></div>
-</div>
-
-<!-- ===== 11 · АНЕЛЯ ===== -->
-<div class="slide" data-label="Анеля" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
-  <div class="sun" style="width:min(440px,60vw);height:min(440px,60vw);left:-15%;top:-20%;opacity:.4"></div>
-  <div class="lw rev">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tiltr"><div class="win" style="width:min(380px,22vw);height:min(490px,28vw);max-width:70vw;"><img src="photos/aliya-5-6.jpg" alt="Анеля" loading="lazy" style="object-position:50% 40%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">подруга Анеля 🫶🏻</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">слова от подруги</div>
-      <div class="lh-name anim" style="--i:1;">Анеля</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(14px,1.5vw,28px);line-height:1.6;margin-top:14px;">
-        <p>Спасибо, что ты у меня есть. Благодарю Всевышнего за нашу дружбу 🤍 Спасибо тебе за то, что ты всегда рядом, готова выслушать, дать ценный совет и поддержать несмотря ни на что ❤️</p>
-        <p>Будь самой счастливой! Пусть твой огонёк внутри никогда не угасает 🥰 Желаю, чтобы ваш брак с Эмиром становился только крепче с каждым днём!</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(20px,2.5vw,42px);margin-top:14px;">Люблю тебя 🫶🏻</div>
-    </div>
-  </div>
-  <div class="grain" style="opacity:.3"></div>
-</div>
-
-<!-- ===== 12 · ДУЛА ===== -->
-<div class="slide" data-label="Дула">
-  <div class="sun" style="width:min(420px,60vw);height:min(420px,60vw);right:-15%;bottom:-20%;opacity:.45"></div>
-  <div class="lw">
-    <div class="lphoto rise" style="--i:1;">
-      <div class="pf kb tilt"><div class="win" style="width:min(440px,26vw);height:min(350px,20vw);max-width:70vw;"><img src="photos/aliya-5-7.jpg" alt="Дула" loading="lazy" style="object-position:50% 35%"></div></div>
-      <div class="cap" style="font-size:clamp(16px,1.6vw,28px)">семья Эмира — Дула 🫂</div>
-    </div>
-    <div class="lbody">
-      <div class="quote-mark anim" style="--i:0;font-size:clamp(70px,8vw,150px);position:absolute;left:-4px;top:-28px;">"</div>
-      <div class="kicker lead anim" style="--i:0;">слова от семьи Эмира</div>
-      <div class="lh-name anim" style="--i:1;">Дула</div>
-      <div class="lt anim" style="--i:2;font-size:clamp(14px,1.5vw,28px);line-height:1.6;margin-top:14px;">
-        <p>Алия, с днём рождения 🫂 Желаю тебе счастья, здоровья и всех благ. Пусть Всевышний благословит ваш брак с Эмиром. Желаю только радости — и слёзы только от счастья.</p>
-        <p>Я тебя очень уважаю и благодарю, что мотивируешь моего брата на лучшую жизнь и всегда рядом с ним при любом положении. Ценнее этого ничего нет.</p>
-      </div>
-      <div class="sig anim" style="--i:3;font-size:clamp(20px,2.5vw,44px);margin-top:14px;">Женгешка, обнял 🫂</div>
-    </div>
-  </div>
-  <div class="grain"></div>
-</div>
-
-<!-- ===== 13 · ЭМИР ===== -->
-<div class="slide" data-label="Алия и Эмир" style="background:linear-gradient(160deg,#FCF6ED 0%,#F7E7D2 100%);">
-  <div class="sun" style="width:min(420px,60vw);height:min(420px,60vw);right:-15%;top:40%;opacity:.4"></div>
-  <div class="s13-left">
-    <div class="kicker lead anim" style="--i:0">И, конечно, их история</div>
-    <h2 class="display s13-title anim" style="--i:1;margin-top:14px;">Алия <span style="color:var(--coral)">&amp;</span> Эмир</h2>
-    <p class="body-t anim" style="--i:2;font-size:clamp(14px,1.5vw,26px);max-width:600px;margin-top:20px;line-height:1.6;">
-      Это не просто отношения, а очень живая, настоящая любовь, в которой есть всё: <em class="warm">уважение, поддержка, доверие и свет.</em>
-    </p>
-    <p class="body-t anim" style="--i:3;font-size:clamp(14px,1.5vw,26px);max-width:600px;margin-top:12px;line-height:1.6;">
-      Они как будто всегда находят друг друга даже в шуме жизни. Между ними много тепла, понимания и очень честного чувства.
-    </p>
-    <p class="lede anim" style="--i:4;font-size:clamp(15px,1.6vw,28px);max-width:600px;margin-top:16px;">
-      Почти как «мистер и миссис Смит» — но в самой доброй и светлой версии 🤍
-    </p>
-    <p class="body-t anim" style="--i:5;font-size:clamp(13px,1.3vw,24px);color:var(--ink-soft);max-width:600px;margin-top:12px;">
-      Мы все искренне желаем им огромной любви и бережности друг к другу.
-    </p>
-  </div>
-  <div class="s13-photos">
-    <div class="rise" style="--i:2;position:absolute;right:22%;top:9%;z-index:2;">
-      <div class="pf kb tiltr"><div class="win" style="width:min(360px,21vw);height:min(460px,27vw);"><img src="photos/aliya-6-1.jpg" alt="Алия и Эмир" loading="lazy" style="object-position:50% 25%"></div></div>
-    </div>
-    <div class="rise" style="--i:4;position:absolute;right:7%;bottom:21%;z-index:3;">
-      <div class="pf tilt"><div class="win" style="width:min(260px,15vw);height:min(330px,19vw);"><img src="photos/aliya-6-2.jpg" alt="" loading="lazy"></div></div>
-    </div>
-    <div class="rise" style="--i:5;position:absolute;right:16%;bottom:6%;z-index:1;">
-      <div class="pf tiltr"><div class="win" style="width:min(210px,12vw);height:min(160px,9vw);"><img src="photos/aliya-6-3.jpg" alt="" loading="lazy"></div></div>
-    </div>
-  </div>
-  <div class="grain"></div>
-</div>
-
-<!-- ===== 14 · ФИНАЛ ===== -->
-<div class="slide" data-label="Финал" style="background:linear-gradient(170deg,#F6CE86 0%,#EDA468 56%,#E08461 100%);color:#fff8ee;">
-  <div class="sun" style="width:min(800px,100vw);height:min(800px,100vw);left:50%;top:42%;transform:translate(-50%,-50%);opacity:.7;background:radial-gradient(circle,#FFF3D6 0%,rgba(255,243,214,.25) 42%,rgba(255,243,214,0) 70%);"></div>
-  <div class="s14-photos">
-    <div class="rise" style="--i:0;position:absolute;left:7%;top:50%;transform:translateY(-50%);z-index:2;">
-      <div class="pf kb tilt"><div class="win" style="width:min(290px,17vw);height:min(370px,21vw);"><img src="photos/aliya-7-1.jpg" alt="маленькая Алия" loading="lazy"></div></div>
-      <div class="cap" style="color:var(--terra);font-size:clamp(14px,1.4vw,26px)">маленькая Алия</div>
-    </div>
-    <div class="rise" style="--i:1;position:absolute;right:7%;top:50%;transform:translateY(-50%);z-index:2;">
-      <div class="pf kb tiltr"><div class="win" style="width:min(290px,17vw);height:min(370px,21vw);"><img src="photos/aliya-7-2.jpg" alt="Алия" loading="lazy" style="object-position:50% 35%"></div></div>
-    </div>
-  </div>
-  <div class="s14-inner">
-    <p class="body-t anim" style="--i:2;font-size:clamp(14px,1.5vw,26px);color:#FFF2DD;max-width:600px;line-height:1.6;">
-      Иногда в жизни появляются люди, рядом с которыми всё становится немного спокойнее, теплее и честнее.
-    </p>
-    <h2 class="display s14-title anim" style="--i:3;">Алия именно<br>такая.</h2>
-    <p class="body-t anim" style="--i:4;font-size:clamp(14px,1.5vw,26px);color:#FFF2DD;max-width:600px;line-height:1.6;">
-      С ней рядом легче улыбаться. Она не старается быть кем-то особенным — она просто есть. Особенная, чудесная, любимая.
-    </p>
-    <div class="rule anim" style="--i:5;width:280px;margin:clamp(16px,2.5vw,28px) 0;background:rgba(255,255,255,.4)"></div>
-    <p class="s14-sig anim" style="--i:5;font-family:var(--hand);line-height:1.1;max-width:680px;">
-      Спасибо, что ты есть. С Днём Рождения, самая лучшая из людей! ♥
-    </p>
+    <p class="logic-outro anim" style="--i:6;color:#FFF3DC;">…и, кажется, никакие сравнения всё равно не передают её полностью. <span style="color:#fff;">Алия, ты уникальный человек, и каждый из нас этим восхищается.</span></p>
   </div>
   <div class="grain" style="opacity:.18"></div>
 </div>
 
-</div><!-- /track -->
-</div><!-- /deck -->
+<!-- ══ 4 · ПОВЕЗЛО ══ -->
+<div class="slide">
+  <div class="sun" style="width:min(420px,58vw);height:min(420px,58vw);right:-14%;top:-18%;opacity:.5;"></div>
+  <div class="lucky-wrap slide-content">
+    <div class="kicker lead anim" style="--i:0">С любовью о ней</div>
+    <h2 class="display lucky-title anim" style="--i:1">«Нам повезло, что у нас есть <em style="color:var(--terra)">такой человек, как ты</em>»</h2>
+    <div class="lucky-inner">
+      <div class="lucky-list">
+        <div class="anim" style="--i:2;display:flex;gap:10px"><div class="lucky-num">01</div><p class="body-t lucky-text">Иногда мы не понимаем, чем она питается: владеет компанией Job2Day, где она и HR-директор, и лучший продажник, и деловой операционщик, и высококвалифицированный турагент 💅🏻, да ещё и в ОКК вносит большой вклад.</p></div>
+        <div class="anim" style="--i:3;display:flex;gap:10px"><div class="lucky-num">02</div><p class="body-t lucky-text">Может устать после сложного дня, но всё равно вечером добирает порцию стресса от 3 серий «Титанов» ✨</p></div>
+        <div class="anim" style="--i:4;display:flex;gap:10px"><div class="lucky-num">03</div><p class="body-t lucky-text">Выросла с очень тёплыми семейными ценностями и несёт их дальше в каждое своё решение.</p></div>
+        <div class="anim" style="--i:5;display:flex;gap:10px"><div class="lucky-num">04</div><p class="body-t lucky-text">За каждым взвешенным советом и поддержкой мы бежим к ней — мудрости у неё выше крыши.</p></div>
+        <div class="anim" style="--i:6;display:flex;gap:10px"><div class="lucky-num">05</div><p class="body-t lucky-text">Умеет любить, искать свет в каждом, кто на её пути, не перестаёт верить в хороших людей и поступки.</p></div>
+        <div class="anim" style="--i:7;display:flex;gap:10px"><div class="lucky-num">06</div><p class="body-t lucky-text">Может замотивировать человека так, что он проснётся на следующий день с мыслью покорить Эверест в одного.</p></div>
+        <div class="anim" style="--i:8;display:flex;gap:10px"><div class="lucky-num">07</div><p class="body-t lucky-text">Любит жизнь в её простых моментах.</p></div>
+        <div class="anim" style="--i:9;display:flex;gap:10px"><div class="lucky-num">08</div><p class="body-t lucky-text">В её сердце так много любви, света и радости — и она делится этим без жадности.</p></div>
+        <div class="anim" style="--i:10;display:flex;gap:10px;grid-column:span 2"><div class="lucky-num">09</div><p class="body-t lucky-text">К ней хочется тянуться, говорить часами, смеяться до слёз, делиться сокровенным — зная, что не будет ни 1 % осуждения.</p></div>
+      </div>
+      <div class="lucky-photos">
+        <div class="rise" style="--i:3"><div class="pf kb tiltr"><div class="win" style="width:min(260px,15vw);height:min(320px,18.5vw);"><img src="photos/aliya-4-1.jpg" alt="" loading="lazy"></div></div></div>
+        <div class="rise" style="--i:6"><div class="pf tilt"><div class="win" style="width:min(240px,14vw);height:min(180px,10.5vw);"><img src="photos/aliya-4-2.jpg" alt="" loading="lazy"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
 
-<!-- NAV -->
+<!-- ══ 5 · СЕРДЦЕМ К СЕРДЦУ ══ -->
+<div class="slide" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
+  <div class="sun" style="width:min(560px,85vw);height:min(560px,85vw);left:50%;top:-22%;transform:translateX(-50%);opacity:.42;"></div>
+  <div class="heart-wrap slide-content">
+    <div class="kicker lead anim" style="--i:0">Самое личное</div>
+    <h2 class="display heart-title anim" style="--i:1">Сердцем к сердцу</h2>
+    <div class="rule anim" style="--i:2;width:180px;margin:clamp(18px,2.5vw,32px) 0;"></div>
+    <p class="body-t heart-body anim" style="--i:2">Здесь собраны очень личные и тёплые слова от самых близких. Мы ничего не переписывали — всё как есть, бережно и без искажений.</p>
+    <p class="heart-hand anim" style="--i:3">далее — слово за словом, от руки к сердцу →</p>
+  </div>
+  <div class="grain" style="opacity:.28"></div>
+</div>
+
+<!-- ══ 6–12 · ПИСЬМА ══ -->
+
+<!-- Мама Эля -->
+<div class="slide">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);right:-14%;bottom:-18%;opacity:.42;"></div>
+  <div class="letter-wrap slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tilt"><div class="win" style="width:min(300px,18vw);height:min(400px,23.5vw);max-width:68vw;"><img src="photos/aliya-5-1.jpg" alt="Мама Эля" loading="lazy" style="object-position:50% 35%"></div></div>
+      <div class="cap">мама Эля 🤍</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">слова от мамы</div>
+      <div class="lh-name anim" style="--i:1">Мама Эля</div>
+      <div class="lt anim" style="--i:2">
+        <p>Моя дорогая доченька, моя Алёшенька, моя Алия!</p>
+        <p>С самого первого дня ты стала самым большим счастьем в моей жизни. Я бесконечно благодарна судьбе за то, что именно ты — моя дочь. Я всегда восхищаюсь твоей искренностью, нежностью и тем, как бережно ты относишься к людям. Ты умеешь дарить тепло просто своим присутствием — это очень редкий дар.</p>
+        <p>Когда я смотрю на вас с Эмиром, моё материнское сердце наполняется благодарностью и спокойствием. Желаю вам сохранить ту любовь, уважение и поддержку, что есть между вами сейчас.</p>
+        <p>Я хочу, чтобы ты всегда верила в себя так же сильно, как верю в тебя я. Пусть твоя доброта никогда не станет слабостью, а останется твоей самой красивой силой.</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3">С днём рождения, қызым! Люблю тебя! ❤️</div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
+
+<!-- Папа Адлет -->
+<div class="slide" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);left:-14%;top:-18%;opacity:.38;"></div>
+  <div class="letter-wrap rev slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tiltr"><div class="win" style="width:min(320px,19vw);height:min(430px,25vw);max-width:68vw;"><img src="photos/aliya-5-2.jpg" alt="Папа Адлет" loading="lazy" style="object-position:50% 35%"></div></div>
+      <div class="cap">папа Адлет 😘</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">слова от папы</div>
+      <div class="lh-name anim" style="--i:1">Папа Адлет</div>
+      <div class="lt anim" style="--i:2">
+        <p>Доча ❤️, поздравляю тебя с днём рождения! Желаю тебе счастья, здоровья, любви и благополучия.</p>
+        <p>Ты уже такая большая — просто не верится. Всё как будто вчера было. Я тебя очень сильно люблю и горжусь тобой.</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3">Твой папа 😘 ❤️ &nbsp;Пока, мой сапленок 🐣</div>
+    </div>
+  </div>
+  <div class="grain" style="opacity:.28"></div>
+</div>
+
+<!-- Папа Маулен -->
+<div class="slide">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);right:-14%;bottom:-18%;opacity:.42;"></div>
+  <div class="letter-wrap slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tilt"><div class="win" style="width:min(340px,20vw);height:min(280px,16.5vw);max-width:68vw;"><img src="photos/aliya-5-3.jpg" alt="Папа Маулен" loading="lazy" style="object-position:50% 45%"></div></div>
+      <div class="cap">папа Эмира — Маулен 💋</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">слова от папы Эмира</div>
+      <div class="lh-name anim" style="--i:1">Папа Маулен</div>
+      <div class="lt anim" style="--i:2">
+        <p>Алия, я рад, что вы встретились с Эмиром. Всегда хотел, чтобы у меня была доча, — и вот ты появилась. Мы любим и ценим тебя 🥰</p>
+        <p>Поздравляю с Днём Рождения! Желаю здоровья и чтобы наш сын тебя любил и уважал. Пусть все твои начинания реализуются, добивайся самых высоких целей. Оставайся всегда такой же нежной и доброй.</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3">Целую, ПАПА 💋</div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
+
+<!-- Мама Вероника -->
+<div class="slide" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);left:-14%;top:-18%;opacity:.38;"></div>
+  <div class="letter-wrap rev slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tiltr"><div class="win" style="width:min(360px,21vw);height:min(280px,16.5vw);max-width:68vw;"><img src="photos/aliya-5-4.jpg" alt="Мама Вероника" loading="lazy" style="object-position:50% 45%"></div></div>
+      <div class="cap">мама Эмира — Вероника 💐</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">слова от мамы Эмира</div>
+      <div class="lh-name anim" style="--i:1">Мама Вероника</div>
+      <div class="lt anim" style="--i:2">
+        <p>Алиюша, донечка наша ❤️, девочка наша нежная 🫶🏻. От всей души поздравляю тебя с твоим Днём Рождения! 💐</p>
+        <p>Желаю исполнения самых заветных желаний! Пусть твои глазки никогда не плачут от горя, только от радости.</p>
+        <p>Вот у нас не было дочки — а теперь она у нас есть. Мы благодарим Всевышнего, что ты у нас появилась. Любим тебя, обнимаем и целуем в твои мягкие щёчки.</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3">МАМА 💋</div>
+    </div>
+  </div>
+  <div class="grain" style="opacity:.28"></div>
+</div>
+
+<!-- Данай -->
+<div class="slide">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);right:-14%;bottom:-18%;opacity:.42;"></div>
+  <div class="letter-wrap slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tilt"><div class="win" style="width:min(300px,18vw);height:min(400px,23.5vw);max-width:68vw;"><img src="photos/aliya-5-5.jpg" alt="Данай" loading="lazy" style="object-position:50% 30%"></div></div>
+      <div class="cap">с любовью, Данай</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">дословно</div>
+      <div class="lh-name anim" style="--i:1">Данай</div>
+      <div class="lt anim" style="--i:2;font-size:clamp(16px,4vw,32px);">
+        <p>Алия…)))</p>
+        <p>Я тебя люблю больше всех на свете!</p>
+        <p>Я Аллаху даю возможность, чтобы у тебя очень много было возможностей.</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3;font-size:clamp(22px,5vw,44px);">Әминь 🤲</div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
+
+<!-- Анеля -->
+<div class="slide" style="background:linear-gradient(168deg,#FBEAD0 0%,#F5D6A9 100%);">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);left:-14%;top:-18%;opacity:.38;"></div>
+  <div class="letter-wrap rev slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tiltr"><div class="win" style="width:min(300px,18vw);height:min(400px,23vw);max-width:68vw;"><img src="photos/aliya-5-6.jpg" alt="Анеля" loading="lazy" style="object-position:50% 40%"></div></div>
+      <div class="cap">подруга Анеля 🫶🏻</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">слова от подруги</div>
+      <div class="lh-name anim" style="--i:1">Анеля</div>
+      <div class="lt anim" style="--i:2">
+        <p>Спасибо, что ты у меня есть. Благодарю Всевышнего за нашу дружбу 🤍 Спасибо тебе за то, что ты всегда рядом, готова выслушать, дать ценный совет и поддержать несмотря ни на что ❤️</p>
+        <p>Будь самой счастливой! Пусть твой огонёк внутри никогда не угасает 🥰 Желаю, чтобы ваш брак с Эмиром становился только крепче с каждым днём!</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3">Люблю тебя 🫶🏻</div>
+    </div>
+  </div>
+  <div class="grain" style="opacity:.28"></div>
+</div>
+
+<!-- Дула -->
+<div class="slide">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);right:-14%;bottom:-18%;opacity:.42;"></div>
+  <div class="letter-wrap slide-content">
+    <div class="letter-photo-wrap rise" style="--i:1">
+      <div class="pf kb tilt"><div class="win" style="width:min(340px,20vw);height:min(275px,16vw);max-width:68vw;"><img src="photos/aliya-5-7.jpg" alt="Дула" loading="lazy" style="object-position:50% 35%"></div></div>
+      <div class="cap">семья Эмира — Дула 🫂</div>
+    </div>
+    <div class="letter-body-wrap">
+      <div class="letter-qmark anim" style="--i:0">"</div>
+      <div class="kicker lead anim" style="--i:0">слова от семьи Эмира</div>
+      <div class="lh-name anim" style="--i:1">Дула</div>
+      <div class="lt anim" style="--i:2">
+        <p>Алия, с днём рождения 🫂 Желаю тебе счастья, здоровья и всех благ. Пусть Всевышний благословит ваш брак с Эмиром. Желаю только радости — и слёзы только от счастья.</p>
+        <p>Я тебя очень уважаю и благодарю, что мотивируешь моего брата на лучшую жизнь и всегда рядом с ним при любом положении. Ценнее этого ничего нет.</p>
+      </div>
+      <div class="letter-sig anim" style="--i:3">Женгешка, обнял 🫂</div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
+
+<!-- ══ 13 · ЭМИР ══ -->
+<div class="slide" style="background:linear-gradient(160deg,#FCF6ED 0%,#F7E7D2 100%);">
+  <div class="sun" style="width:min(380px,55vw);height:min(380px,55vw);right:-14%;top:38%;opacity:.38;"></div>
+  <div class="emir-wrap slide-content">
+    <div class="kicker lead anim" style="--i:0">И, конечно, их история</div>
+    <h2 class="display emir-title anim" style="--i:1">Алия <span style="color:var(--coral)">&amp;</span> Эмир</h2>
+    <p class="body-t emir-body anim" style="--i:2">Это не просто отношения, а очень живая, настоящая любовь, в которой есть всё: <em class="warm">уважение, поддержка, доверие и свет.</em></p>
+    <p class="body-t emir-body anim" style="--i:3">Они как будто всегда находят друг друга даже в шуме жизни. Между ними много тепла, понимания и очень честного чувства.</p>
+    <p class="lede anim" style="--i:4;font-size:clamp(15px,1.6vw,26px);margin-top:12px;">Почти как «мистер и миссис Смит» — но в самой доброй и светлой версии 🤍</p>
+    <p class="body-t anim" style="--i:5;font-size:clamp(13px,1.3vw,22px);color:var(--ink-soft);margin-top:10px;">Мы все искренне желаем им огромной любви и бережности друг к другу.</p>
+  </div>
+  <!-- фото десктоп -->
+  <div class="emir-photos">
+    <div class="rise slide-content" style="--i:2;position:absolute;right:22%;top:8%;z-index:2;">
+      <div class="pf kb tiltr"><div class="win" style="width:min(340px,20vw);height:min(440px,25.5vw);"><img src="photos/aliya-6-1.jpg" alt="Алия и Эмир" loading="lazy" style="object-position:50% 25%"></div></div>
+    </div>
+    <div class="rise slide-content" style="--i:4;position:absolute;right:6%;bottom:20%;z-index:3;">
+      <div class="pf tilt"><div class="win" style="width:min(240px,14vw);height:min(310px,18vw);"><img src="photos/aliya-6-2.jpg" alt="" loading="lazy"></div></div>
+    </div>
+    <div class="rise slide-content" style="--i:5;position:absolute;right:15%;bottom:5%;z-index:1;">
+      <div class="pf tiltr"><div class="win" style="width:min(190px,11vw);height:min(148px,8.5vw);"><img src="photos/aliya-6-3.jpg" alt="" loading="lazy"></div></div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
+
+<!-- ══ 14 · ФИНАЛ ══ -->
+<div class="slide" style="background:linear-gradient(170deg,#F6CE86 0%,#EDA468 56%,#E08461 100%);color:#fff8ee;">
+  <div class="sun" style="width:min(720px,95vw);height:min(720px,95vw);left:50%;top:44%;transform:translate(-50%,-50%);opacity:.65;background:radial-gradient(circle,#FFF3D6 0%,rgba(255,243,214,.22) 42%,rgba(255,243,214,0) 70%);"></div>
+  <div class="final-photos">
+    <div class="rise slide-content" style="--i:0;position:absolute;left:6%;top:50%;transform:translateY(-50%);z-index:2;">
+      <div class="pf kb tilt"><div class="win" style="width:min(270px,16vw);height:min(348px,20vw);"><img src="photos/aliya-7-1.jpg" alt="маленькая Алия" loading="lazy"></div></div>
+      <div class="cap" style="color:var(--terra)">маленькая Алия</div>
+    </div>
+    <div class="rise slide-content" style="--i:1;position:absolute;right:6%;top:50%;transform:translateY(-50%);z-index:2;">
+      <div class="pf kb tiltr"><div class="win" style="width:min(270px,16vw);height:min(348px,20vw);"><img src="photos/aliya-7-2.jpg" alt="Алия" loading="lazy" style="object-position:50% 35%"></div></div>
+    </div>
+  </div>
+  <div class="final-wrap slide-content">
+    <p class="final-body anim" style="--i:2">Иногда в жизни появляются люди, рядом с которыми всё становится немного спокойнее, теплее и честнее.</p>
+    <h2 class="display final-title anim" style="--i:3">Алия именно<br>такая.</h2>
+    <p class="final-body anim" style="--i:4">С ней рядом легче улыбаться. Она не старается быть кем-то особенным — она просто есть. Особенная, чудесная, любимая.</p>
+    <div class="rule anim" style="--i:5;width:240px;margin:clamp(14px,2vw,24px) 0;background:rgba(255,255,255,.38);"></div>
+    <p class="final-sig anim" style="--i:5">Спасибо, что ты есть. С Днём Рождения, самая лучшая из людей! ♥</p>
+  </div>
+  <div class="grain" style="opacity:.16"></div>
+</div>
+
+</div></div><!-- /track /deck -->
+
 <div id="nav">
-  <button id="btn-prev" title="Назад">&#8592;</button>
+  <button id="btn-prev">&#8592;</button>
   <span id="counter">1 / 14</span>
-  <button id="btn-next" title="Вперёд">&#8594;</button>
+  <button id="btn-next">&#8594;</button>
   <div id="dots"></div>
 </div>
 
 <script>
 const slides=[...document.querySelectorAll('.slide')];
 const track=document.getElementById('track');
-const total=slides.length;
-let cur=0, animT=null;
+const N=slides.length;
+let cur=0,animT=null;
 
 // dots
 const dotsEl=document.getElementById('dots');
 slides.forEach((_,i)=>{
   const b=document.createElement('button');
-  b.className='dot-btn';b.addEventListener('click',()=>go(i));
+  b.className='dot-btn';
+  b.addEventListener('click',()=>go(i));
   dotsEl.appendChild(b);
 });
 const dotBtns=[...dotsEl.querySelectorAll('.dot-btn')];
 
-// petals (3 per slide on mobile, 4 on desktop)
-const colors=['#F3C977','#E7A593','#E0816A','#F1D49A'];
-const isMobile=window.innerWidth<900;
-slides.forEach(sec=>{
-  const n=isMobile?3:4;
-  for(let i=0;i<n;i++){
-    const s=document.createElement('div');s.className='petal';
-    const sz=8+Math.random()*12;
-    s.style.cssText=`width:${sz}px;height:${sz*.7}px;left:${Math.random()*100}%;`+
-      `background:${colors[i%4]};border-radius:60% 60% 60% 0/70% 70% 40% 40%;`+
-      `animation-duration:${12+Math.random()*10}s;animation-delay:${-Math.random()*18}s;`;
-    sec.appendChild(s);
+// petals
+const PC=['#F3C977','#E7A593','#E0816A','#F1D49A'];
+const isMob=window.innerWidth<768;
+slides.forEach(sl=>{
+  for(let i=0;i<(isMob?2:3);i++){
+    const p=document.createElement('div');p.className='petal';
+    const sz=7+Math.random()*11;
+    p.style.cssText=`width:${sz}px;height:${sz*.7}px;left:${Math.random()*100}%;`+
+      `background:${PC[i%4]};border-radius:60% 60% 60% 0/70% 70% 40% 40%;`+
+      `animation-duration:${11+Math.random()*9}s;animation-delay:${-Math.random()*16}s;`;
+    sl.appendChild(p);
   }
 });
 
-function play(idx){
-  const sl=slides[idx];
+function play(i){
+  const sl=slides[i];
   sl.classList.remove('entering','shown');
   void sl.offsetHeight;
   requestAnimationFrame(()=>requestAnimationFrame(()=>sl.classList.add('entering')));
   clearTimeout(animT);
-  animT=setTimeout(()=>{sl.classList.remove('entering');sl.classList.add('shown');},2200);
+  animT=setTimeout(()=>{sl.classList.remove('entering');sl.classList.add('shown');},2100);
 }
 
-function go(idx){
-  if(idx<0||idx>=total) return;
+function go(i){
+  if(i<0||i>=N) return;
   slides[cur].classList.remove('entering','shown');
-  cur=idx;
+  cur=i;
   track.style.transform=`translateX(-${cur*100}vw)`;
-  document.getElementById('counter').textContent=(cur+1)+' / '+total;
+  document.getElementById('counter').textContent=(cur+1)+' / '+N;
   document.getElementById('btn-prev').disabled=(cur===0);
-  document.getElementById('btn-next').disabled=(cur===total-1);
-  dotBtns.forEach((b,i)=>b.classList.toggle('on',i===cur));
+  document.getElementById('btn-next').disabled=(cur===N-1);
+  dotBtns.forEach((b,j)=>b.classList.toggle('on',j===cur));
   play(cur);
-  // reset scroll
   slides[cur].scrollTop=0;
 }
 
@@ -668,34 +726,35 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft') go(cur-1);
 });
 
-// touch swipe
-let tx=0,dragging=false,startX=0,startY=0,isHoriz=null;
+// свайп
+let sx=0,sy=0,sw=false,sh=null,sdx=0;
 const deck=document.getElementById('deck');
+
 deck.addEventListener('touchstart',e=>{
-  startX=e.touches[0].clientX;
-  startY=e.touches[0].clientY;
-  dragging=true;isHoriz=null;tx=0;
+  sx=e.touches[0].clientX;
+  sy=e.touches[0].clientY;
+  sw=true;sh=null;sdx=0;
 },{passive:true});
+
 deck.addEventListener('touchmove',e=>{
-  if(!dragging) return;
-  const dx=e.touches[0].clientX-startX;
-  const dy=e.touches[0].clientY-startY;
-  if(isHoriz===null) isHoriz=Math.abs(dx)>Math.abs(dy);
-  if(!isHoriz) return;
+  if(!sw) return;
+  const dx=e.touches[0].clientX-sx;
+  const dy=e.touches[0].clientY-sy;
+  if(sh===null) sh=Math.abs(dx)>Math.abs(dy)+4;
+  if(!sh) return; // вертикальный скролл — не перехватываем
   e.preventDefault();
-  tx=dx;
+  sdx=dx;
   track.style.transition='none';
-  track.style.transform=`translateX(${-cur*100}vw + ${tx}px)`;
-  // fix: use calc
-  track.style.transform=`translateX(calc(${-cur*100}vw + ${tx}px))`;
+  track.style.transform=`translateX(calc(${-cur*100}vw + ${dx}px))`;
 },{passive:false});
+
 deck.addEventListener('touchend',()=>{
-  if(!dragging||!isHoriz){dragging=false;return;}
+  if(!sw||!sh){sw=false;return;}
   track.style.transition='';
-  if(tx<-50) go(cur+1);
-  else if(tx>50) go(cur-1);
-  else track.style.transform=`translateX(-${cur*100}vw)`;
-  dragging=false;
+  if(sdx<-48) go(cur+1);
+  else if(sdx>48) go(cur-1);
+  else{track.style.transform=`translateX(-${cur*100}vw)`;}
+  sw=false;
 });
 
 go(0);
